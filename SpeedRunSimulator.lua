@@ -78,7 +78,7 @@ function autoBuy(egg)
 end
 
 function autoUpgrade(egg)
-    listEgg = {"", "D", "G", "E"}
+    listEgg = {"", "D", "G", "E", "R"}
     while wait() do
         if not autoUpgradeEnabled then break end
         for i,v in pairs(listEgg) do
@@ -143,7 +143,7 @@ Auto:AddToggle({
 Auto:AddDropdown({
 	Name = "Buy Eggs",
 	Default = "EggOne",
-	Options = {"EggOne","EggTwo","EggThree", "EggFour", "EggFive", "EggSix", "EggSeven", "EggEight"},
+	Options = {"EggOne","EggTwo","EggThree", "EggFour", "EggFive", "EggSix", "EggSeven", "EggEight", "EggNine", "EggTen", "EggEleven"},
 	Callback = function(value)
         autoBuy(value)
 	end    
@@ -159,7 +159,7 @@ Auto:AddToggle({
 Auto:AddDropdown({
 	Name = "Auto Upgrade",
 	Default = "Phoenix",
-	Options = {'Baby Chick', 'Cat', 'Chicken', 'Cloud', 'Cow', 'Cupid', 'Detective', 'Dragon', 'Fire Bunny', 'Fire King', 'Giraffe', 'Horse', 'Ice Bat', 'Ice King', 'Mummy', 'Officer', 'Pharaoh', 'Phoenix', 'Pig', 'Piggy', 'Professor', 'Santa', 'Satan', 'Scorpion', 'Skeleton', 'Vampire', 'Wizard', 'Yeti']},
+	Options = {'Baby Chick', 'Cat', 'Chicken', 'Cloud', 'Cow', 'Cupid', 'Detective', 'Dragon', 'Elf', 'Fire Bunny', 'Fire King', 'Giraffe', 'Gnome', 'Horse', 'Ice Bat', 'Ice King', 'Mummy', 'Officer', 'Pharaoh', 'Phoenix', 'Pig', 'Piggy', 'Plant', 'Professor', 'Santa', 'Satan', 'Scorpion', 'Skeleton', 'Troll', 'Vampire', 'Wizard', 'Yeti'},
 	Callback = function(value)
         autoUpgrade(value)
 	end    
