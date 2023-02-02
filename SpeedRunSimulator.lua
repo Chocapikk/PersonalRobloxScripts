@@ -4,6 +4,13 @@ getgenv().autoClickEnabled = true
 getgenv().autoBuyEnabled = true
 getgenv().infiniteJumpEnabled = true
 
+
+function teleportTo(player)    
+    local localPlayer = game.Players.LocalPlayer
+    localPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame  
+    wait()        
+end
+
 function infiniteJump()
     task.spawn(function()
         local character = game.Players.LocalPlayer.Character
@@ -112,3 +119,23 @@ Misc:AddToggle({
         infiniteJump()
   	end    
 })
+
+
+local TeleportTo = Window:MakeTab({
+	Name = "Teleport Player",
+	Icon = "rbxassetid://259820115",
+	PremiumOnly = false
+})
+
+TeleportTo:AddSection({
+    Name = "Teleport To A Player"
+})
+
+for i, player in ipairs(game.Players:GetPlayers()) do
+    TeleportTo:AddButton({
+        Name = player.Name,
+        Callback = function()
+            teleportTo(player)
+        end
+    })
+end
