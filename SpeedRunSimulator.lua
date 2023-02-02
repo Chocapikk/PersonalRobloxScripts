@@ -2,8 +2,17 @@ getgenv().autoOrbsEnabled = true
 getgenv().autoRebirthEnabled = true
 getgenv().autoClickEnabled = true
 getgenv().autoBuyEnabled = true
+getgenv().autoUpgradeEnabled = true
 getgenv().infiniteJumpEnabled = true
+getgenv().setTradingEnabled = true
 
+
+function getPlayers()
+    for i, player in ipairs(game.Players:GetPlayers()) do
+        table.insert(player, playerTable)
+    end
+    return playerTable
+end
 
 function teleportTo(player)    
     local localPlayer = game.Players.LocalPlayer
@@ -59,22 +68,49 @@ function autoClick()
     end)
 end
 
-function autoBuy()
+function autoBuy(egg)
     task.spawn(function()
         while wait() do
             if not autoBuyEnabled then break end
-            game:GetService("ReplicatedStorage").Remotes.CanBuyEgg:InvokeServer("EggFive")
+            game:GetService("ReplicatedStorage").Remotes.CanBuyEgg:InvokeServer(egg)
         end
     end)
 end
 
+function autoUpgrade(egg)
+    listEgg = {"", "D", "G", "E"}
+    while wait() do
+        if not autoUpgradeEnabled then break end
+        for i,v in pairs(listEgg) do
+            newEgg = egg..v
+            game:GetService("ReplicatedStorage").Remotes.UpgradePet:FireServer(newEgg)
+        end
+    end
+end
+
+function setTrading()
+    local enabled = "Off"
+    if setTradingEnabled then enabled = "On" end
+    game:GetService("ReplicatedStorage").Remotes.EnableTrading:FireServer(enabled)
+end
+
+
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "First GUI Exploit for SpeedRun Simulator by Balgo", HidePremium = false, SaveConfig = true, ConfigFolder = "SpeedRunSimulator", })
+local Window = OrionLib:MakeWindow({Name = "First GUI Exploit for SpeedRun Simulator by Balgo", HidePremium = false, SaveConfig = true, ConfigFolder = "SpeedRunSimulator", IntroText = "Balgo Security"})
 
 local Auto = Window:MakeTab({
 	Name = "Auto",
 	Icon = "rbxassetid://259820115",
 	PremiumOnly = false
+})
+
+
+Auto:AddToggle({
+	Name = "Enable Trading",
+	Callback = function()
+		setTradingEnabled = not setTradingEnabled
+        setTrading()
+  	end    
 })
 
 Auto:AddToggle({
@@ -102,8 +138,31 @@ Auto:AddToggle({
 	Name = "Auto Buy Eggs",
 	Callback = function()
 		autoBuyEnabled = not autoBuyEnabled
-        autoBuy()
   	end    
+})
+Auto:AddDropdown({
+	Name = "Buy Eggs",
+	Default = "EggOne",
+	Options = {"EggOne","EggTwo","EggThree", "EggFour", "EggFive", "EggSix", "EggSeven", "EggEight"},
+	Callback = function(value)
+        autoBuy(value)
+	end    
+})
+
+Auto:AddToggle({
+	Name = "Auto Upgrade Eggs",
+	Callback = function()
+		autoUpgradeEnabled = not autoUpgradeEnabled
+  	end    
+})
+
+Auto:AddDropdown({
+	Name = "Auto Upgrade",
+	Default = "Phoenix",
+	Options = {'Baby Chick', 'Cat', 'Chicken', 'Cloud', 'Cow', 'Cupid', 'Detective', 'Dragon', 'Fire Bunny', 'Fire King', 'Giraffe', 'Horse', 'Ice Bat', 'Ice King', 'Mummy', 'Officer', 'Pharaoh', 'Phoenix', 'Pig', 'Piggy', 'Professor', 'Santa', 'Satan', 'Scorpion', 'Skeleton', 'Vampire', 'Wizard', 'Yeti']},
+	Callback = function(value)
+        autoUpgrade(value)
+	end    
 })
 
 local Misc = Window:MakeTab({
