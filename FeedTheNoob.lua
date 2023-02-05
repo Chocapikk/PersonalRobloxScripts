@@ -7,6 +7,10 @@ getgenv().autoObbyEnabled = true
 
 -------- Config -------------------
 
+game.Players.LocalPlayer.PlayerGui.FDN.BuyCashFrame:Destroy() --Cash Frame
+game.Players.LocalPlayer.PlayerGui.UI.Notifications.NotificationCreator:Destroy() -- Notifications
+-----------Remove unwanted GUI------------
+
 function teleportLocalPlayer(input)
     local Player = game.Players.LocalPlayer
     local Mouse = Player:GetMouse()
@@ -46,7 +50,7 @@ end
 
 function autoCollect()
     spawn(function() 
-        while wait() do
+        while wait(0.5) do
             if not autoCollectEnabled then break end
             for tycoonIndex = 1, 8 do
                 for i, item in pairs(workspace.Tycoons:FindFirstChild(tostring(tycoonIndex)).ItemDebris:GetChildren()) do
@@ -60,7 +64,7 @@ end
 
 function autoBuy()
     spawn(function()
-        while wait() do
+        while wait(0.5) do
             if not autoBuyEnabled then break end
             local character = game.Players.LocalPlayer.Character
             local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
@@ -72,17 +76,23 @@ function autoBuy()
                     firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
                     firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
                 end
+                local speedUpgrades = game:GetService("Workspace").Tycoons[tycoonIndex].SpeedUpgrades
+                local children = speedUpgrades:GetChildren()
+                for i = #children, 1, -1 do
+                    local dropperButton = children[i]
+                    firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
+                    firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
+                end
             end
         end
     end)
 end
 
-
 function autoSell()
     spawn(function()
         local character = game.Players.LocalPlayer.Character
         local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-        while wait() do
+        while wait(0.5) do
             if not autoSellEnabled then break end
             for tycoonIndex = 1, 8 do
                 for i,v in pairs(game:GetService("Workspace").Tycoons[tycoonIndex].SellPad:GetChildren()) do
@@ -96,7 +106,7 @@ end
 
 function autoObby()
     spawn(function()
-        while wait() do
+        while wait(0.5) do
             if not autoObbyEnabled then break end
             local character = game.Players.LocalPlayer.Character
             local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
