@@ -1,7 +1,23 @@
 getgenv().autoCollectEnabled = true
 getgenv().autoSellEnabled = true
+getgenv().autoBuyEnabled = true
 getgenv().infiniteJumpEnabled = true
+getgenv().clickTpEnabled = true
+getgenv().autoObbyEnabled = true
+
 -------- Config -------------------
+
+function teleportLocalPlayer(input)
+    local Player = game.Players.LocalPlayer
+    local Mouse = Player:GetMouse()
+    local UIS = game:GetService("UserInputService")
+    if clickTpEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
+       local Char = Player.Character
+       if Char then
+          Char:MoveTo(Mouse.Hit.p)
+       end
+    end
+ end
 
 function walkSpeed(speed)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
@@ -42,6 +58,25 @@ function autoCollect()
     end)
 end
 
+function autoBuy()
+    spawn(function()
+        while wait() do
+            if not autoBuyEnabled then break end
+            local character = game.Players.LocalPlayer.Character
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            for tycoonIndex = 1, 8 do
+                local dropperButtons = game:GetService("Workspace").Tycoons[tycoonIndex].DropperButtons
+                local children = dropperButtons:GetChildren()
+                for i = #children, 1, -1 do
+                    local dropperButton = children[i]
+                    firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
+                    firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
+                end
+            end
+        end
+    end)
+end
+
 
 function autoSell()
     spawn(function()
@@ -54,6 +89,21 @@ function autoSell()
                     firetouchinterest(humanoidRootPart,  v, 0)
                     firetouchinterest(humanoidRootPart,  v, 1)
                 end
+            end
+        end
+    end)
+end
+
+function autoObby()
+    spawn(function()
+        while wait() do
+            if not autoObbyEnabled then break end
+            local character = game.Players.LocalPlayer.Character
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            local obbyRewardButtons = game:GetService("Workspace").ObbyRewardButtons
+            for i, rewardButton in pairs(obbyRewardButtons:GetChildren()) do
+                firetouchinterest(humanoidRootPart, rewardButton, 0)
+                firetouchinterest(humanoidRootPart, rewardButton, 1)
             end
         end
     end)
@@ -87,6 +137,22 @@ Auto:AddToggle({
   	end    
 })
 
+Auto:AddToggle({
+	Name = "Auto Buy",
+	Callback = function(value)
+		autoBuyEnabled = value
+        autoBuy()
+  	end    
+})
+
+Auto:AddToggle({
+	Name = "Auto Obby",
+	Callback = function(value)
+		autoObbyEnabled = value
+        autoObby()
+  	end    
+})
+
 local Misc = Window:MakeTab({
 	Name = "Misc",
 	Icon = "rbxassetid://259820115",
@@ -98,6 +164,15 @@ Misc:AddToggle({
 	Callback = function()
 		infiniteJumpEnabled = not infiniteJumpEnabled
         infiniteJump()
+  	end    
+})
+
+
+Misc:AddToggle({
+	Name = "Control Click TP",
+	Callback = function()
+        clickTpEnabled = not clickTpEnabled
+        game:GetService("UserInputService").InputBegan:Connect(teleportLocalPlayer)
   	end    
 })
 
