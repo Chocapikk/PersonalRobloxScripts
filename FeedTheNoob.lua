@@ -7,9 +7,11 @@ getgenv().autoObbyEnabled = true
 
 -------- Config -------------------
 
-game.Players.LocalPlayer.PlayerGui.FDN.BuyCashFrame:Destroy() --Cash Frame
-game.Players.LocalPlayer.PlayerGui.UI.Notifications.NotificationCreator:Destroy() -- Notifications
------------Remove unwanted GUI------------
+local function destroyIfExists(obj)
+    if obj then
+        obj:Destroy()
+    end
+end
 
 function teleportLocalPlayer(input)
     local Player = game.Players.LocalPlayer
@@ -48,15 +50,23 @@ function infiniteJump()
     end)
 end
 
+function getTycoonIndex()
+    for tycoonIndex = 1, 8 do
+        if tostring(game:GetService("Workspace").Tycoons[tycoonIndex].TycoonInfo.Owner.Value) == game.Players.LocalPlayer.Name then
+            return tycoonIndex
+        end
+    end
+end
+
 function autoCollect()
     spawn(function() 
-        while wait(0.5) do
+        local tycoonIndex = getTycoonIndex()
+        if not tycoonIndex then return end
+        while wait() do
             if not autoCollectEnabled then break end
-            for tycoonIndex = 1, 8 do
-                for i, item in pairs(workspace.Tycoons:FindFirstChild(tostring(tycoonIndex)).ItemDebris:GetChildren()) do
-                    local args = {[1] = item}
-                    game:GetService("ReplicatedStorage").RF.CollectItem:InvokeServer(unpack(args))
-                end
+            for i, item in pairs(game:GetService("Workspace").Tycoons[tycoonIndex].ItemDebris:GetChildren()) do
+                local args = {[1] = item}
+                game:GetService("ReplicatedStorage").RF.CollectItem:InvokeServer(unpack(args))
             end
         end
     end)
@@ -66,23 +76,24 @@ function autoBuy()
     spawn(function()
         while wait(0.5) do
             if not autoBuyEnabled then break end
+            local tycoonIndex = getTycoonIndex()
+            if not tycoonIndex then return end
             local character = game.Players.LocalPlayer.Character
             local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-            for tycoonIndex = 1, 8 do
-                local dropperButtons = game:GetService("Workspace").Tycoons[tycoonIndex].DropperButtons
-                local children = dropperButtons:GetChildren()
-                for i = #children, 1, -1 do
-                    local dropperButton = children[i]
-                    firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
-                    firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
-                end
-                local speedUpgrades = game:GetService("Workspace").Tycoons[tycoonIndex].SpeedUpgrades
-                local children = speedUpgrades:GetChildren()
-                for i = #children, 1, -1 do
-                    local dropperButton = children[i]
-                    firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
-                    firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
-                end
+
+            local dropperButtons = game:GetService("Workspace").Tycoons[tycoonIndex].DropperButtons
+            local children = dropperButtons:GetChildren()
+            for i = #children, 1, -1 do
+                local dropperButton = children[i]
+                firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
+                firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
+            end
+            local speedUpgrades = game:GetService("Workspace").Tycoons[tycoonIndex].SpeedUpgrades
+            local children = speedUpgrades:GetChildren()
+            for i = #children, 1, -1 do
+                local dropperButton = children[i]
+                firetouchinterest(humanoidRootPart, dropperButton.Main, 0)
+                firetouchinterest(humanoidRootPart, dropperButton.Main, 1)
             end
         end
     end)
@@ -90,15 +101,15 @@ end
 
 function autoSell()
     spawn(function()
+        game:GetService("ReplicatedStorage").RF.EssentialFunction:InvokeServer("SettingsChange", {"Sound Effects"})
         local character = game.Players.LocalPlayer.Character
         local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
         while wait(0.5) do
             if not autoSellEnabled then break end
-            for tycoonIndex = 1, 8 do
-                for i,v in pairs(game:GetService("Workspace").Tycoons[tycoonIndex].SellPad:GetChildren()) do
-                    firetouchinterest(humanoidRootPart,  v, 0)
-                    firetouchinterest(humanoidRootPart,  v, 1)
-                end
+            local tycoonIndex = getTycoonIndex()
+            for i,v in pairs(game:GetService("Workspace").Tycoons[tycoonIndex].SellPad:GetChildren()) do
+                firetouchinterest(humanoidRootPart,  v, 0)
+                firetouchinterest(humanoidRootPart,  v, 1)
             end
         end
     end)
@@ -218,3 +229,6 @@ for i, player in ipairs(game.Players:GetPlayers()) do
     })
 end
 ------------- UI ----------------
+destroyIfExists(game.Players.LocalPlayer.PlayerGui.FDN.BuyCashFrame)
+destroyIfExists(game.Players.LocalPlayer.PlayerGui.UI.Notifications.NotificationCreator)
+-----------Remove unwanted GUI------------
