@@ -1,3 +1,5 @@
+-- Game ID: 7047488135
+
 getgenv().autoOrbsEnabled = true
 getgenv().autoRebirthEnabled = true
 getgenv().autoClickEnabled = true
