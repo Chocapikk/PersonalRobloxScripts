@@ -1,3 +1,5 @@
+-- Game ID: 10894722579
+
 getgenv().autoCollectEnabled = true
 getgenv().autoSellEnabled = true
 getgenv().autoBuyEnabled = true
