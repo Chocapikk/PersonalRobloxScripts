@@ -6,6 +6,7 @@ getgenv().autoMergeEnabled = true
 getgenv().autoBuyUnicornsEnabled = true
 getgenv().autoRatePurchaseEnabled = true
 getgenv().infiniteJumpEnabled = true
+getgenv().clickTpEnabled = true
 
 -------------------- Config ----------------------
 
@@ -18,6 +19,18 @@ function teleportTo(player)
     localPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame  
     wait()        
 end
+
+function teleportLocalPlayer(input)
+    local Player = game.Players.LocalPlayer
+    local Mouse = Player:GetMouse()
+    local UIS = game:GetService("UserInputService")
+    if clickTpEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
+       local Char = Player.Character
+       if Char then
+          Char:MoveTo(Mouse.Hit.p)
+       end
+    end
+ end
 
 function infiniteJump()
     game:GetService("UserInputService").JumpRequest:Connect(function()
@@ -89,15 +102,27 @@ end
 -------------------- Functions ----------------------
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Unicorn Tycoon Exploit by Balgo", HidePremium = false, SaveConfig = true, ConfigFolder = "SpeedRunSimulator", IntroText = "Balgo Security"})
+local CustomTheme = {
+    Main = Color3.fromRGB(131,58,180),
+    Second = Color3.fromRGB(0,0,0),
+    Stroke = Color3.fromRGB(0,249,31),
+    Divider = Color3.fromRGB(0,249,31),
+    Text = Color3.fromRGB(255,255,255),
+    TextDark = Color3.fromRGB(109,130,124)
+}
+    
+OrionLib.Themes["Custom"] = CustomTheme
+OrionLib.SelectedTheme = "Custom"
+
+local Window = OrionLib:MakeWindow({Name = "🦄 Unicorn Tycoon Exploit by Balgo", HidePremium = false, SaveConfig = true, ConfigFolder = "UnicornTycoon", IntroText = "❗️ Balgo Security"})
 local Auto = Window:MakeTab({
 	Name = "Auto",
-	Icon = "rbxassetid://259820115",
+	Icon = "rbxassetid://11560341824",
 	PremiumOnly = false
 })
 
 Auto:AddToggle({
-	Name = "Auto Collect",
+	Name = "🚗 Auto Collect",
 	Callback = function(Value)
         autoCollectEnabled = Value
         autoCollect()
@@ -105,7 +130,7 @@ Auto:AddToggle({
 })
 
 Auto:AddToggle({
-	Name = "Auto Heart Deposit",
+	Name = "❤️ Auto Heart Deposit",
 	Callback = function(Value)
 		autoHeartDepositEnabled = Value
         autoHeartDeposit()
@@ -113,7 +138,7 @@ Auto:AddToggle({
 })
 
 Auto:AddToggle({
-	Name = "Auto Merge",
+	Name = "🔀 Auto Merge",
 	Callback = function(Value)
 		autoMergeEnabled = Value
         autoMerge()
@@ -121,14 +146,14 @@ Auto:AddToggle({
 })
 
 Auto:AddToggle({
-	Name = "Auto Buy Unicorns",
+	Name = "🦄 Auto Buy Unicorns",
 	Callback = function(Value)
 		autoBuyUnicornsEnabled = Value
   	end    
 })
 
 Auto:AddSlider({
-	Name = "Buy Unicorns",
+	Name = "🦄 Buy Unicorns",
 	Min = 1,
 	Max = 600,
 	Default = 1,
@@ -141,7 +166,7 @@ Auto:AddSlider({
 })
 
 Auto:AddToggle({
-	Name = "Auto Rate Purchase",
+	Name = "⭐️ Auto Rate Purchase",
 	Callback = function(Value)
 		autoRatePurchaseEnabled = Value
         autoRatePurchase()
@@ -150,12 +175,20 @@ Auto:AddToggle({
 
 local Misc = Window:MakeTab({
 	Name = "Misc",
-	Icon = "rbxassetid://259820115",
+	Icon = "rbxassetid://11560341824",
 	PremiumOnly = false
 })
 
 Misc:AddToggle({
-	Name = "Infinite Jump",
+	Name = "🖱️ Control Click TP",
+	Callback = function()
+        clickTpEnabled = not clickTpEnabled
+        game:GetService("UserInputService").InputBegan:Connect(teleportLocalPlayer)
+  	end    
+})
+
+Misc:AddToggle({
+	Name = "⚡️ Infinite Jump",
 	Callback = function()
 		infiniteJumpEnabled = not infiniteJumpEnabled
         infiniteJump()
@@ -163,7 +196,7 @@ Misc:AddToggle({
 })
 
 Misc:AddSlider({
-	Name = "Walk Speed",
+	Name = "👣 Walk Speed",
 	Min = 32,
 	Max = 600,
 	Default = 32,
@@ -175,23 +208,33 @@ Misc:AddSlider({
 	end    
 })
 
-local TeleportTo = Window:MakeTab({
-	Name = "Teleport Player",
-	Icon = "rbxassetid://259820115",
-	PremiumOnly = false
+Misc:AddSection({
+    Name = "🌌 Teleport To A Player"
 })
 
-TeleportTo:AddSection({
-    Name = "Teleport To A Player"
-})
-
-for i, player in ipairs(game.Players:GetPlayers()) do
-    TeleportTo:AddButton({
-        Name = player.Name,
-        Callback = function()
+local playerMap = {}
+local playerDropdown = Misc:AddDropdown({
+    Name = "👥 Select a player",
+    Options = {},
+    Callback = function(selectedPlayer)
+        local player = playerMap[selectedPlayer]
+        if player then
             teleportTo(player)
         end
-    })
-end
+    end
+})
+
+Misc:AddButton({
+    Name = "🔄 Refresh Players",
+    Callback = function()
+        playerMap = {}
+        local playerOptions = {}
+        for i, player in ipairs(game.Players:GetPlayers()) do
+            table.insert(playerOptions, player.Name)
+            playerMap[player.Name] = player
+        end
+        playerDropdown:Refresh(playerOptions, true)
+    end
+})
 
 -------------------- UI ----------------------
