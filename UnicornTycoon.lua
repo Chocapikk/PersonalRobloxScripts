@@ -134,7 +134,7 @@ Auto:AddToggle({
 	Name = "❤️ Auto Heart Deposit",
 	Callback = function(Value)
 		autoHeartDepositEnabled = Value
-        autoHeartDeposit()
+        	autoHeartDeposit()
   	end    
 })
 
@@ -142,7 +142,7 @@ Auto:AddToggle({
 	Name = "🔀 Auto Merge",
 	Callback = function(Value)
 		autoMergeEnabled = Value
-        autoMerge()
+        	autoMerge()
   	end    
 })
 
@@ -150,7 +150,7 @@ Auto:AddToggle({
 	Name = "🦄 Auto Buy Unicorns",
 	Callback = function(Value)
 		autoBuyUnicornsEnabled = Value
-        autoBuyUnicorns(BuyUnicornsAmount)
+        	autoBuyUnicorns(BuyUnicornsAmount)
   	end    
 })
 
@@ -171,7 +171,7 @@ Auto:AddToggle({
 	Name = "⭐️ Auto Rate Purchase",
 	Callback = function(Value)
 		autoRatePurchaseEnabled = Value
-        autoRatePurchase()
+        	autoRatePurchase()
   	end    
 })
 
@@ -193,7 +193,7 @@ Misc:AddToggle({
 	Name = "⚡️ Infinite Jump",
 	Callback = function()
 		infiniteJumpEnabled = not infiniteJumpEnabled
-        infiniteJump()
+        	infiniteJump()
   	end    
 })
 
