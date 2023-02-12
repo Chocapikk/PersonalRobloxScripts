@@ -56,7 +56,7 @@ function autoCollect()
         local tycoons = game:GetService("Workspace").Tycoons
 
         while wait(0.001) do
-            if not autoCollect then break end
+            if not autoCollectEnabled then return end
             for i = 1, 8 do
                 local tycoonName = "Tycoon_" .. tostring(i)
                 local tycoon = tycoons[tycoonName]
@@ -76,7 +76,7 @@ end
 function autoHeartDeposit()
     spawn(function()
         while wait(0.001) do
-            if not autoHeartDepositEnabled then break end
+            if not autoHeartDepositEnabled then return end
             game:GetService("ReplicatedStorage").Knit.Services.TycoonService.RF.DepositUnits:InvokeServer()
         end
     end)
@@ -85,7 +85,7 @@ end
 function autoMerge()
     spawn(function()
         while wait(0.001) do
-            if not autoMergeEnabled then break end
+            if not autoMergeEnabled then return end
             game:GetService("ReplicatedStorage").Knit.Services.TycoonService.RF.RequestMerge:InvokeServer()
         end
     end)
@@ -94,7 +94,7 @@ end
 function autoBuyUnicorns(quantity)
     spawn(function()
         while wait(0.001) do
-            if not autoBuyUnicornsEnabled then break end
+            if not autoBuyUnicornsEnabled then return end
             game:GetService("ReplicatedStorage").Knit.Services.TycoonService.RF.RequestNodePurchase:InvokeServer(quantity)
         end
     end)
@@ -115,7 +115,14 @@ local CustomTheme = {
 OrionLib.Themes["Custom"] = CustomTheme
 OrionLib.SelectedTheme = "Custom"
 
-local Window = OrionLib:MakeWindow({Name = "🦄 Unicorn Tycoon Exploit by Balgo", HidePremium = false, SaveConfig = true, ConfigFolder = "UnicornTycoon", IntroText = "❗️ Balgo Security"})
+local Window = OrionLib:MakeWindow({
+		Name = "🦄 Unicorn Tycoon Exploit by Balgo", 
+		HidePremium = false, 
+		SaveConfig = true, 
+		ConfigFolder = "UnicornTycoon", 
+		IntroText = "❗️ Balgo Security"
+})
+
 local Auto = Window:MakeTab({
 	Name = "Auto",
 	Icon = "rbxassetid://11560341824",
@@ -126,7 +133,7 @@ Auto:AddToggle({
 	Name = "🚗 Auto Collect",
 	Callback = function(Value)
         autoCollectEnabled = Value
-        autoCollect()
+        if autoCollectEnabled then autoCollect() end
   	end    
 })
 
@@ -134,7 +141,7 @@ Auto:AddToggle({
 	Name = "❤️ Auto Heart Deposit",
 	Callback = function(Value)
 		autoHeartDepositEnabled = Value
-        	autoHeartDeposit()
+        autoHeartDeposit()
   	end    
 })
 
@@ -142,7 +149,7 @@ Auto:AddToggle({
 	Name = "🔀 Auto Merge",
 	Callback = function(Value)
 		autoMergeEnabled = Value
-        	autoMerge()
+        autoMerge()
   	end    
 })
 
@@ -150,7 +157,7 @@ Auto:AddToggle({
 	Name = "🦄 Auto Buy Unicorns",
 	Callback = function(Value)
 		autoBuyUnicornsEnabled = Value
-        	autoBuyUnicorns(BuyUnicornsAmount)
+        autoBuyUnicorns(BuyUnicornsAmount)
   	end    
 })
 
@@ -171,7 +178,7 @@ Auto:AddToggle({
 	Name = "⭐️ Auto Rate Purchase",
 	Callback = function(Value)
 		autoRatePurchaseEnabled = Value
-        	autoRatePurchase()
+        autoRatePurchase()
   	end    
 })
 
@@ -193,7 +200,7 @@ Misc:AddToggle({
 	Name = "⚡️ Infinite Jump",
 	Callback = function()
 		infiniteJumpEnabled = not infiniteJumpEnabled
-        	infiniteJump()
+        infiniteJump()
   	end    
 })
 
