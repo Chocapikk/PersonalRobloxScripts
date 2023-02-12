@@ -7,6 +7,7 @@ getgenv().autoBuyUnicornsEnabled = true
 getgenv().autoRatePurchaseEnabled = true
 getgenv().infiniteJumpEnabled = true
 getgenv().clickTpEnabled = true
+getgenv().BuyUnicornsAmount = 1
 
 -------------------- Config ----------------------
 
@@ -149,6 +150,7 @@ Auto:AddToggle({
 	Name = "🦄 Auto Buy Unicorns",
 	Callback = function(Value)
 		autoBuyUnicornsEnabled = Value
+        autoBuyUnicorns(BuyUnicornsAmount)
   	end    
 })
 
@@ -161,7 +163,7 @@ Auto:AddSlider({
 	Increment = 1,
 	ValueName = "Unicorns",
 	Callback = function(Value)
-		autoBuyUnicorns(Value)
+		BuyUnicornsAmount = Value
 	end    
 })
 
