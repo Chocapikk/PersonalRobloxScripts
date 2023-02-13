@@ -7,6 +7,7 @@ getgenv().autoBuyUnicornsEnabled = true
 getgenv().autoRatePurchaseEnabled = true
 getgenv().infiniteJumpEnabled = true
 getgenv().clickTpEnabled = true
+getgenv().clickTpBypassEnabled = true
 getgenv().autoBuyUnicornsAmount = nil
 
 -------------------- Config ----------------------
@@ -19,6 +20,43 @@ function teleportTo(player)
     local localPlayer = game.Players.LocalPlayer
     localPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame  
     wait()        
+end
+
+function teleportLocalPlayerBypass(speed)
+    if speed == 0 then clickTpBypassEnabled = false return end
+    clickTpBypassEnabled = true
+
+    local bodyVelocityEnabled = true
+    local UserInputService = game:GetService("UserInputService")
+    local localPlayer = game.Players.LocalPlayer
+    local mouse = localPlayer:GetMouse()
+    local TweenService = game:GetService("TweenService")
+
+    function toPosition(position)
+        local character = localPlayer.Character
+        if character then
+            local humanoidRootPart = character.HumanoidRootPart
+            local distance = (humanoidRootPart.Position - mouse.Hit.p).magnitude
+            local tweenSpeed = distance / speed
+            local tweenInfo = TweenInfo.new(tweenSpeed, Enum.EasingStyle.Linear)
+            local tweenProperties = {CFrame = CFrame.new(position)}
+            TweenService:Create(humanoidRootPart, tweenInfo, tweenProperties):Play()
+            if bodyVelocityEnabled then
+                local bodyVelocity = Instance.new("BodyVelocity")
+                bodyVelocity.Parent = humanoidRootPart
+                bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                wait(tweenSpeed)
+                bodyVelocity:Destroy()
+            end
+        end
+    end
+    UserInputService.InputBegan:Connect(function(input)
+        if clickTpBypassEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+            local position = mouse.Hit.p
+            toPosition(position)
+        end
+    end)    
 end
 
 function teleportLocalPlayer(input)
@@ -137,7 +175,7 @@ Auto:AddToggle({
 	Name = "🚗 Auto Collect",
 	Callback = function(Value)
         autoCollectEnabled = Value
-        if autoCollectEnabled then autoCollect() end
+        autoCollect()
   	end    
 })
 
@@ -173,10 +211,23 @@ local Misc = Window:MakeTab({
 
 Misc:AddToggle({
 	Name = "🖱️ Control Click TP",
-	Callback = function()
-        clickTpEnabled = not clickTpEnabled
+	Callback = function(Value)
+        clickTpEnabled = Value
         game:GetService("UserInputService").InputBegan:Connect(teleportLocalPlayer)
   	end    
+})
+
+Misc:AddSlider({
+	Name = "🖱️ Control Click TP Bypass",
+	Min = 0,
+	Max = 350,
+	Default = 0,
+	Color = Color3.fromRGB(51, 204, 51),
+	Increment = 50,
+	ValueName = "Speed (0 To Disable)",
+	Callback = function(speed)
+		teleportLocalPlayerBypass(speed)
+	end    
 })
 
 Misc:AddToggle({
