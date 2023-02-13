@@ -7,7 +7,7 @@ getgenv().autoBuyUnicornsEnabled = true
 getgenv().autoRatePurchaseEnabled = true
 getgenv().infiniteJumpEnabled = true
 getgenv().clickTpEnabled = true
-getgenv().BuyUnicornsAmount = 1
+getgenv().autoBuyUnicornsAmount = nil
 
 -------------------- Config ----------------------
 
@@ -91,11 +91,11 @@ function autoMerge()
     end)
 end
 
-function autoBuyUnicorns(quantity)
+function autoBuyUnicorns()
     spawn(function()
         while wait(0.001) do
-            if not autoBuyUnicornsEnabled then return end
-            game:GetService("ReplicatedStorage").Knit.Services.TycoonService.RF.RequestNodePurchase:InvokeServer(quantity)
+            if not autoBuyUnicornsEnabled and autoBuyUnicornsAmount then return end
+            game:GetService("ReplicatedStorage").Knit.Services.TycoonService.RF.RequestNodePurchase:InvokeServer(autoBuyUnicornsAmount)
         end
     end)
 end
@@ -122,6 +122,17 @@ local Auto = Window:MakeTab({
 	PremiumOnly = false
 })
 
+Auto:AddDropdown({
+	Name = "🦄 Buy Unicorns",
+	Options = {"Disable", "1 Unicorn", "5 Unicorns"},
+	Selected = 1,
+	Color = Color3.fromRGB(51, 204, 51),
+	Callback = function(Value)
+		autoBuyUnicornsAmount = tonumber(string.match(Value, "%d+"))
+		autoBuyUnicorns()
+	end    
+})
+
 Auto:AddToggle({
 	Name = "🚗 Auto Collect",
 	Callback = function(Value)
@@ -144,27 +155,6 @@ Auto:AddToggle({
 		autoMergeEnabled = Value
         autoMerge()
   	end    
-})
-
-Auto:AddToggle({
-	Name = "🦄 Auto Buy Unicorns",
-	Callback = function(Value)
-		autoBuyUnicornsEnabled = Value
-        autoBuyUnicorns(BuyUnicornsAmount)
-  	end    
-})
-
-Auto:AddSlider({
-	Name = "🦄 Buy Unicorns",
-	Min = 1,
-	Max = 5,
-	Default = 1,
-	Color = Color3.fromRGB(51, 204, 51),
-	Increment = 5,
-	ValueName = "Unicorns",
-	Callback = function(Value)
-		BuyUnicornsAmount = Value
-	end    
 })
 
 Auto:AddToggle({
