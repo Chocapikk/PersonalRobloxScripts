@@ -115,14 +115,7 @@ local CustomTheme = {
 OrionLib.Themes["Custom"] = CustomTheme
 OrionLib.SelectedTheme = "Custom"
 
-local Window = OrionLib:MakeWindow({
-		Name = "🦄 Unicorn Tycoon Exploit by Balgo", 
-		HidePremium = false, 
-		SaveConfig = true, 
-		ConfigFolder = "UnicornTycoon", 
-		IntroText = "❗️ Balgo Security"
-})
-
+local Window = OrionLib:MakeWindow({Name = "🦄 Unicorn Tycoon Exploit by Balgo", HidePremium = false, SaveConfig = true, ConfigFolder = "UnicornTycoon", IntroText = "❗️ Balgo Security"})
 local Auto = Window:MakeTab({
 	Name = "Auto",
 	Icon = "rbxassetid://11560341824",
@@ -164,10 +157,10 @@ Auto:AddToggle({
 Auto:AddSlider({
 	Name = "🦄 Buy Unicorns",
 	Min = 1,
-	Max = 600,
+	Max = 5,
 	Default = 1,
 	Color = Color3.fromRGB(51, 204, 51),
-	Increment = 1,
+	Increment = 5,
 	ValueName = "Unicorns",
 	Callback = function(Value)
 		BuyUnicornsAmount = Value
