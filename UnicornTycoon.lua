@@ -8,6 +8,7 @@ getgenv().autoRatePurchaseEnabled = true
 getgenv().infiniteJumpEnabled = true
 getgenv().clickTpEnabled = true
 getgenv().clickTpBypassEnabled = true
+getgenv().noClipEnabled = true
 getgenv().autoBuyUnicornsAmount = nil
 
 -------------------- Config ----------------------
@@ -78,6 +79,27 @@ function infiniteJump()
     end)
 end
 
+
+function noClip()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local rootPart = character:FindFirstChild("HumanoidRootPart") or character.PrimaryPart
+
+    local function isDescendantOfTerrain(part)
+        local terrain = game.Workspace.Terrain
+        return terrain and terrain:IsAncestorOf(part)
+    end
+
+    game:GetService("RunService").Stepped:Connect(function()
+        if noClipEnabled then
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") and not isDescendantOfTerrain(part) then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+end 
 function autoRatePurchase()
     spawn(function()
         while wait(0.001) do
@@ -209,14 +231,6 @@ local Misc = Window:MakeTab({
 	PremiumOnly = false
 })
 
-Misc:AddToggle({
-	Name = "🖱️ Control Click TP",
-	Callback = function(Value)
-        clickTpEnabled = Value
-        game:GetService("UserInputService").InputBegan:Connect(teleportLocalPlayer)
-  	end    
-})
-
 Misc:AddSlider({
 	Name = "🖱️ Control Click TP Bypass",
 	Min = 0,
@@ -230,14 +244,6 @@ Misc:AddSlider({
 	end    
 })
 
-Misc:AddToggle({
-	Name = "⚡️ Infinite Jump",
-	Callback = function()
-		infiniteJumpEnabled = not infiniteJumpEnabled
-        infiniteJump()
-  	end    
-})
-
 Misc:AddSlider({
 	Name = "👣 Walk Speed",
 	Min = 32,
@@ -249,6 +255,30 @@ Misc:AddSlider({
 	Callback = function(Value)
 		walkSpeed(Value)
 	end    
+})
+
+Misc:AddToggle({
+	Name = "🖱️ Control Click TP",
+	Callback = function(Value)
+        clickTpEnabled = Value
+        game:GetService("UserInputService").InputBegan:Connect(teleportLocalPlayer)
+  	end    
+})
+
+Misc:AddToggle({
+	Name = "⚡️ Infinite Jump",
+	Callback = function(Value)
+		infiniteJumpEnabled = Value
+        infiniteJump()
+  	end    
+})
+
+Misc:AddToggle({
+	Name = "👻 NoClip",
+	Callback = function(Value)
+		noClipEnabled = Value
+        noClip()
+  	end    
 })
 
 Misc:AddSection({
