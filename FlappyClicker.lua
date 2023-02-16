@@ -7,6 +7,31 @@ getgenv().autoBuyLandsEnabled = true
 getgenv().autoRebirthEnabled = true
 -------------------- Config ----------------------
 
+function getEggs()
+    local result = {"Disable"}
+    for i,v in pairs(game:GetService("Workspace").Prompts.PetPrompts:GetChildren()) do
+        table.insert(result, tostring(v.Name))
+   end
+   return result 
+end
+
+function getTrails()
+    local result = {"Disable"}
+    for i,v in pairs(game:GetService("Workspace").Prompts.TrailPrompts:GetChildren()) do
+        table.insert(result, tostring(v.Name))
+   end
+   return result 
+end
+
+function getLands()
+    local result = {"Disable"}
+    for i,v in pairs(game:GetService("ReplicatedStorage").Zones:GetChildren()) do
+        table.insert(result, tostring(v.Name))
+   end
+   return result 
+end
+
+
 function autoClick()
     task.spawn(function()
         while wait(0.001) do
@@ -135,7 +160,7 @@ Auto:AddToggle({
 
 Auto:AddDropdown({
     Name = "🐱 Auto Buy Eggs",
-    Options = {"Disable", "BasicEgg", "SandEgg", "DiamondEgg", "OvergrownEgg", "MagmaEgg"},
+    Options = getEggs(),
     Callback = function(egg)
         if egg == "Disable" then
             autoBuyEggsEnabled = false
@@ -147,7 +172,7 @@ Auto:AddDropdown({
 
 Auto:AddDropdown({
     Name = "🌠 Auto Buy Trails",
-    Options = {"Disable", "BasicChest", "SandChest", "CrystalChest", "OvergrownChest", "MagmaChest"},
+    Options = getTrails(),
     Callback = function(trail)
         if trail == "Disable" then
             autoBuyTrailsEnabled = false
@@ -159,7 +184,7 @@ Auto:AddDropdown({
 
 Auto:AddDropdown({
     Name = "🗺️ Teleport To Land",
-    Options = {"Desert", "Cavern", "Forest", "Volcano"},
+    Options = getLands(),
     Callback = function(land)
         teleportToLand(land)
     end
