@@ -61,7 +61,7 @@ end
 
 function autoBuyLands(land)
     task.spawn(function()
-        local lands = {"Desert", "Cavern", "Forest", "Volcano"}
+        local lands = getLands()
         if not autoBuyLandsEnabled then return end
         for i, land in pairs(lands) do
             game:GetService("ReplicatedStorage").Remotes.Zones.BuyZone:FireServer(land)
