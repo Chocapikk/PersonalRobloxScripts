@@ -6,6 +6,7 @@ getgenv().autoBuyTrailsEnabled = true
 getgenv().autoBuyLandsEnabled = true
 getgenv().autoRebirthEnabled = true
 getgenv().clickTpEnabled = true
+getgenv().infiniteBackPackEnabled = true
 -------------------- Config ----------------------
 
 function walkSpeed(speed)
@@ -121,6 +122,16 @@ function autoClick()
     end)
 end
 
+function infiniteBackPack()
+	task.spawn(function()
+		while wait(0.001) do
+			if not infiniteBackPackEnabled then break end
+			game:GetService("ReplicatedStorage").Remotes.Verify:FireServer("D")
+			game:GetService("ReplicatedStorage").Remotes.Verify:FireServer("T")
+		end	
+	end)
+end
+
 function autoBuyEggs(egg)
     task.spawn(function()
         while wait(0.001) do
@@ -219,6 +230,14 @@ Auto:AddToggle({
 	Callback = function(Value)
         autoClickEnabled = Value
         autoClick()
+  	end    
+})
+
+Auto:AddToggle({
+	Name = "ထ Infinite BackPack",
+	Callback = function(Value)
+        infiniteBackPackEnabled = Value
+        infiniteBackPack()
   	end    
 })
 
